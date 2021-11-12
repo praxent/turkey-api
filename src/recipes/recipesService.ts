@@ -6,30 +6,9 @@ const db = new JSONdb('./data/recipes.json')
 export type RecipeCreationParams = Pick<Recipe, 'temp' | 'name' | 'time' | 'img_url' | 'instructions'>
 
 export class RecipesService {
-  //public get(nameOrId: number): Recipe | null;
-  //public get(nameOrId: string): Recipe | null;
-  // public get(nameOrId: string | number | undefined): Recipe | Recipe[] {
-
-  //   if (!nameOrId) {
-  //     return this.listAll()
-  //   }
-
-
-  //   if (typeof nameOrId === "number") {
-  //     return this.getById(nameOrId)
-  //   }
-
-
-  //   if (typeof nameOrId === "string") {
-  //     const recipes = this.listAll()
-  //     return recipes.filter((recipe: Recipe) => (recipe.name === nameOrId))
-  //   }
-
-  //   return []
-  // }
-
   public listAll(): Recipe[] {
-    return db.JSON()
+    const recipes = Object.values<Recipe>(db.JSON())
+    return recipes
   }
 
   public getById(id: number): Recipe | undefined {
@@ -38,7 +17,7 @@ export class RecipesService {
 
   public listByName(name: string): Recipe[] {
     const recipes = this.listAll()
-    return recipes.filter((recipe: Recipe) => (recipe.name === name))
+    return recipes.filter((recipe: Recipe) => (recipe.name.toLowerCase().trim() === name.toLowerCase().trim()))
   }
 
   public create(RecipeCreationParams: RecipeCreationParams): Recipe {

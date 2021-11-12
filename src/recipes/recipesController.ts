@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Path, Post, Query, Res, Route, SuccessResponse, TsoaResponse } from 'tsoa'
+import { Body, Controller, Get, Path, Post, Delete, Query, Res, Route, SuccessResponse, TsoaResponse } from 'tsoa'
 import { Recipe } from './recipe'
 import { RecipesService, RecipeCreationParams } from './recipesService'
 
@@ -37,4 +37,18 @@ export class RecipesController extends Controller {
     this.setStatus(201)
     return this.recipesService.create(requestBody)
   }
+
+  @SuccessResponse('204', 'Deleted')
+  @Delete('{RecipeId}')
+  public async deleteRecipe(
+    @Path() RecipeId: number,
+    @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
+  ): Promise<string | void> {
+    const recipe = this.recipesService.deleteById(RecipeId);
+    if (!recipe) {
+      return notFoundResponse(404, { reason: "No turkeys found! :(" });
+    }
+    return;
+  }
+  
 }

@@ -4,5 +4,5 @@ export interface Recipe {
   temp: number
   time: number
   instructions: string
-  img_url: string
+  imgUrl: string
 }

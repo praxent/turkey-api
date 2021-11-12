@@ -3,26 +3,42 @@ const JSONdb = require('simple-json-db')
 const db = new JSONdb('./data/recipes.json')
 
 // A post request should not contain an id.
-export type RecipeCreationParams = Pick<Recipe, 'temp' | 'name' | 'time' | 'ingredients'>
+export type RecipeCreationParams = Pick<Recipe, 'temp' | 'name' | 'time' | 'img_url' | 'instructions'>
 
 export class RecipesService {
-  public get(id: number | string | undefined): Recipe {
-    let recipe = db.get(id)
+  //public get(nameOrId: number): Recipe | null;
+  //public get(nameOrId: string): Recipe | null;
+  // public get(nameOrId: string | number | undefined): Recipe | Recipe[] {
 
-    if (!recipe) {
-      recipe = []
-      const recipes = db.JSON()
-      if (id !== undefined) {
-        for (const key in recipes) {
-          if (recipes[key].name === id) {
-            recipe.push(recipes[key])
-          }
-        }
-      } else {
-        recipe = recipes
-      }
-    }
-    return recipe
+  //   if (!nameOrId) {
+  //     return this.listAll()
+  //   }
+
+
+  //   if (typeof nameOrId === "number") {
+  //     return this.getById(nameOrId)
+  //   }
+
+
+  //   if (typeof nameOrId === "string") {
+  //     const recipes = this.listAll()
+  //     return recipes.filter((recipe: Recipe) => (recipe.name === nameOrId))
+  //   }
+
+  //   return []
+  // }
+
+  public listAll(): Recipe[] {
+    return db.JSON()
+  }
+
+  public getById(id: number): Recipe | undefined {
+    return db.get(id)
+  }
+
+  public listByName(name: string): Recipe[] {
+    const recipes = this.listAll()
+    return recipes.filter((recipe: Recipe) => (recipe.name === name))
   }
 
   public create(RecipeCreationParams: RecipeCreationParams): Recipe {

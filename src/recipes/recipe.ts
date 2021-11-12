@@ -3,5 +3,6 @@ export interface Recipe {
   name: string
   temp: number
   time: number
-  ingredients: string[]
+  instructions: string
+  img_url: string
 }

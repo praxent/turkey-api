@@ -1,23 +1,40 @@
-import { Body, Controller, Get, Path, Post, Query, Route, SuccessResponse } from 'tsoa'
+import { Body, Controller, Get, Path, Post, Query, Res, Route, SuccessResponse, TsoaResponse } from 'tsoa'
 import { Recipe } from './recipe'
 import { RecipesService, RecipeCreationParams } from './recipesService'
 
 @Route('Recipes')
 export class RecipesController extends Controller {
+  private recipesService;
+
+  constructor() {
+    super();
+    this.recipesService = new RecipesService();
+  }
+
   @Get('{RecipeId}')
-  public async getRecipe(@Path() RecipeId: number): Promise<Recipe> {
-    return new RecipesService().get(RecipeId)
+  public async getRecipe(
+    @Path() RecipeId: number,
+    @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
+  ): Promise<Recipe | string> {
+    const recipe = this.recipesService.getById(RecipeId);
+    if (!recipe) {
+      return notFoundResponse(404, { reason: "No turkeys found! :(" });
+    }
+    return recipe;
   }
 
   @Get('')
-  public async getRecipeByName(@Query() name?: string): Promise<Recipe | Recipe[]> {
-    return new RecipesService().get(name)
+  public async getRecipeByName(@Query() name?: string): Promise<Recipe[]> {
+    if (name)
+      return this.recipesService.listByName(name)
+    else
+      return this.recipesService.listAll();
   }
 
   @SuccessResponse('201', 'Created')
   @Post()
   public async createRecipe(@Body() requestBody: RecipeCreationParams): Promise<Recipe> {
     this.setStatus(201)
-    return new RecipesService().create(requestBody)
+    return this.recipesService.create(requestBody)
   }
 }

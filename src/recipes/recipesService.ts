@@ -17,7 +17,7 @@ export class RecipesService {
 
   public listByName(name: string): Recipe[] {
     const recipes = this.listAll()
-    return recipes.filter((recipe: Recipe) => (recipe.name.toLowerCase().trim() === name.toLowerCase().trim()))
+    return recipes.filter((recipe: Recipe) => (recipe.name.toLowerCase().trim().indexOf(name.toLowerCase().trim()) > -1))
   }
 
   public create(RecipeCreationParams: RecipeCreationParams): Recipe {
